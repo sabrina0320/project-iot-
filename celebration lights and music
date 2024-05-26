@@ -44,27 +44,25 @@ int noteDurations[] = {
   4, 4, 4, 4, 4, 4, 4, 4, 2
 };
 
-// Control LED from Blynk App
-BLYNK_WRITE(V2){
+// Blynk virtual pin write handlers
+BLYNK_WRITE(V0){
   int value = param.asInt();
   digitalWrite(ledPin1, value);
 }
 
-void setup() {
-  // Debug console
-  Serial.begin(115200);
-
-  // Initialize LED pins as outputs
-  pinMode(ledPin1, OUTPUT);
-  pinMode(ledPin2, OUTPUT);
-
-  // Initialize Wi-Fi connectivity and Blynk Authentication
-  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
+BLYNK_WRITE(V1){
+  int value = param.asInt();
+  digitalWrite(ledPin2, value);
 }
 
-void loop() {
-  Blynk.run();
+BLYNK_WRITE(V3){
+  int value = param.asInt();
+  if (value == 1) {
+    playMelody();
+  }
+}
 
+void playMelody() {
   // Play the melody with LEDs blinking
   for (int thisNote = 0; thisNote < sizeof(melody)/sizeof(melody[0]); thisNote++) {
     // Calculate the note duration, take one second divided by the note type.
@@ -87,6 +85,20 @@ void loop() {
 
   // Add a delay between repeats of the melody
   delay(2000);
+}
 
-  Serial.println("=============================================");
+void setup() {
+  // Debug console
+  Serial.begin(115200);
+
+  // Initialize LED pins as outputs
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+
+  // Initialize Wi-Fi connectivity and Blynk Authentication
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
+}
+
+void loop() {
+  Blynk.run();
 }
